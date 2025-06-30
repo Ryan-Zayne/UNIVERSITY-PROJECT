@@ -7,7 +7,7 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	plugins: [
 		viteTsconfigPaths(),
-		tanstackRouter({ autoCodeSplitting: true, indexToken: "page" }),
+		tanstackRouter({ autoCodeSplitting: true, indexToken: "page", routeToken: "layout" }),
 		react(),
 		tailwindcss(),
 	],
