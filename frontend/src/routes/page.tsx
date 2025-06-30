@@ -7,19 +7,21 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/routes/index.tsx</code> and save to reload.
-				</p>
-				<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-					Learn React
-				</a>
-				<a className="App-link" href="https://tanstack.com" target="_blank" rel="noopener noreferrer">
-					Learn TanStack
-				</a>
-			</header>
+		<div
+			className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-400
+				to-blue-500 px-4 py-12"
+		>
+			<div className="max-w-md space-y-4">
+				<img src={logo} className="mx-auto h-12 w-auto" alt="logo" />
+				<h1 className="text-4xl font-bold text-white">Welcome to the University Project</h1>
+				<p className="text-xl text-white">This is a university project</p>
+				<button
+					type="button"
+					className="rounded bg-white px-4 py-2 font-bold text-blue-500 hover:bg-blue-50"
+				>
+					Click me
+				</button>
+			</div>
 		</div>
 	);
 }

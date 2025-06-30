@@ -8,81 +8,122 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as pathLayoutRouteImport } from './routes/_(path)/layout'
+import { Route as PageRouteImport } from './routes/page'
+import { Route as pathMainLayoutRouteImport } from './routes/_(path)/main/layout'
+import { Route as pathMainPageRouteImport } from './routes/_(path)/main/page'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as PageImport } from './routes/page'
-
-// Create/Update Routes
-
-const PageRoute = PageImport.update({
+const pathLayoutRoute = pathLayoutRouteImport.update({
+  id: '/_(path)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PageRoute = PageRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const pathMainLayoutRoute = pathMainLayoutRouteImport.update({
+  id: '/main',
+  path: '/main',
+  getParentRoute: () => pathLayoutRoute,
+} as any)
+const pathMainPageRoute = pathMainPageRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => pathMainLayoutRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof PageRoute
+  '/main': typeof pathMainLayoutRouteWithChildren
+  '/main/': typeof pathMainPageRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof PageRoute
+  '/main': typeof pathMainPageRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof PageRoute
+  '/_(path)': typeof pathLayoutRouteWithChildren
+  '/_(path)/main': typeof pathMainLayoutRouteWithChildren
+  '/_(path)/main/': typeof pathMainPageRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/main' | '/main/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/main'
+  id: '__root__' | '/' | '/_(path)' | '/_(path)/main' | '/_(path)/main/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  PageRoute: typeof PageRoute
+  pathLayoutRoute: typeof pathLayoutRouteWithChildren
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_(path)': {
+      id: '/_(path)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof pathLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof PageImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_(path)/main': {
+      id: '/_(path)/main'
+      path: '/main'
+      fullPath: '/main'
+      preLoaderRoute: typeof pathMainLayoutRouteImport
+      parentRoute: typeof pathLayoutRoute
+    }
+    '/_(path)/main/': {
+      id: '/_(path)/main/'
+      path: '/'
+      fullPath: '/main/'
+      preLoaderRoute: typeof pathMainPageRouteImport
+      parentRoute: typeof pathMainLayoutRoute
     }
   }
 }
 
-// Create and export the route tree
-
-export interface FileRoutesByFullPath {
-  '/': typeof PageRoute
+interface pathMainLayoutRouteChildren {
+  pathMainPageRoute: typeof pathMainPageRoute
 }
 
-export interface FileRoutesByTo {
-  '/': typeof PageRoute
+const pathMainLayoutRouteChildren: pathMainLayoutRouteChildren = {
+  pathMainPageRoute: pathMainPageRoute,
 }
 
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof PageRoute
+const pathMainLayoutRouteWithChildren = pathMainLayoutRoute._addFileChildren(
+  pathMainLayoutRouteChildren,
+)
+
+interface pathLayoutRouteChildren {
+  pathMainLayoutRoute: typeof pathMainLayoutRouteWithChildren
 }
 
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
-  fileRoutesById: FileRoutesById
+const pathLayoutRouteChildren: pathLayoutRouteChildren = {
+  pathMainLayoutRoute: pathMainLayoutRouteWithChildren,
 }
 
-export interface RootRouteChildren {
-  PageRoute: typeof PageRoute
-}
+const pathLayoutRouteWithChildren = pathLayoutRoute._addFileChildren(
+  pathLayoutRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   PageRoute: PageRoute,
+  pathLayoutRoute: pathLayoutRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/"
-      ]
-    },
-    "/": {
-      "filePath": "page.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
