@@ -6,8 +6,8 @@
 		"build": "vite build",
 		"dev": "vite --port 3000",
 		"lint:eslint": "eslint . --max-warnings 0 --no-warn-ignored",
-		"lint:format": "prettier --cache --write .",
-		"lint:type-check": "tsc --pretty --incremental -p tsconfig.json",
+		"lint:format": "prettier --write .",
+		"lint:type-check": "tsc --pretty -p tsconfig.json",
 		"serve": "vite preview",
 		"start": "vite --port 3000"
 	},
